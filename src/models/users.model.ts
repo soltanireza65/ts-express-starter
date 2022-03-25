@@ -12,7 +12,7 @@ function findByName(this: types.QueryHelperThis<typeof User, QueryHelpers>, name
 })
 @modelOptions({ schemaOptions: { collection: 'users', timestamps: true } })
 @queryMethod(findByName)
-class User {
+export class User {
   @prop({ required: true })
   public name: string;
 
