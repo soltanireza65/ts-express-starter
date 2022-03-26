@@ -24,10 +24,10 @@ const checkFileType = (file, cb) => {
 };
 export const photoUpload = multer({
   storage: storage,
-  limits: {
-    fileSize: 1000000,
-  },
-  fileFilter: function (req, file, cb) {
-    checkFileType(file, cb);
-  },
+  // limits: {
+  //   fileSize: 1000000,
+  // },
+  // fileFilter: function (req, file, cb) {
+  //   checkFileType(file, cb);
+  // },
 }).single('photo');

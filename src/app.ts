@@ -1,21 +1,19 @@
+// import 'reflect-metadata';
+import { CREDENTIALS, LOG_FORMAT, NODE_ENV, ORIGIN, PORT } from '@config';
+import { dbConnection } from '@databases';
+import { Routes } from '@interfaces/routes.interface';
+import errorMiddleware from '@middlewares/error.middleware';
+import { logger, stream } from '@utils/logger';
 import compression from 'compression';
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
 import express from 'express';
 import helmet from 'helmet';
 import hpp from 'hpp';
-import morgan from 'morgan';
 import { connect, set } from 'mongoose';
+import morgan from 'morgan';
 import swaggerJSDoc from 'swagger-jsdoc';
 import swaggerUi from 'swagger-ui-express';
-import { NODE_ENV, PORT, LOG_FORMAT, ORIGIN, CREDENTIALS } from '@config';
-import { dbConnection } from '@databases';
-import { Routes } from '@interfaces/routes.interface';
-import errorMiddleware from '@middlewares/error.middleware';
-import { logger, stream } from '@utils/logger';
-import multer from 'multer';
-import path from 'path';
-import { storage } from './utils/storage';
 
 class App {
   public app: express.Application;
@@ -32,6 +30,15 @@ class App {
     this.initializeRoutes(routes);
     this.initializeSwagger();
     this.initializeErrorHandling();
+
+    this.app.post('/test', async (req, res) => {
+      try {
+        res.send({
+          body: req.body,
+        });
+      } catch (error) {}
+    });
+
     this.app.all('*', async (req, res, next) => {
       res.status(404).send('Not Found!!!');
     });
@@ -65,9 +72,11 @@ class App {
     this.app.use(helmet());
     this.app.use(compression());
     this.app.use(express.json());
-    this.app.use(express.urlencoded({ extended: true }));
+    this.app.use(express.urlencoded());
+    // this.app.use(express.bodyParser());
+    // this.app.use(express.urlencoded({ extended: true }));
     this.app.use(cookieParser());
-    // this.app.use(fileUpload());
+    this.app.use('/static', express.static('public'));
   }
 
   private initializeRoutes(routes: Routes[]) {
